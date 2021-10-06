@@ -1,6 +1,6 @@
 # Weather App
 
-A simple open weather map API based Application to get current weather and getting 8 Day Weather Forecast
+A open weather map API based Application to get current weather and getting 8 Day Weather Forecast
 
 ## Screenshots
 
