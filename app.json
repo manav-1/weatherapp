@@ -17,11 +17,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.manav.weatherApp",
+      "buildNumber": "1.0.0"
     },
     "android": {
+      "package": "com.manav.weatherApp",
+      "versionCode": 1,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/weather-app.png",
         "backgroundColor": "#FFFFFF"
       }
     },
