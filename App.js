@@ -6,7 +6,9 @@ import {
   ScrollView,
   RefreshControl,
   TouchableOpacity,
-  Platform
+  Platform,
+  Alert,
+  Image,
 } from "react-native";
 import CurrentWeather from "./components/CurrentWeather";
 import FiveDayForecast from "./components/FiveDayForecast";
@@ -22,6 +24,7 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import * as Font from "expo-font";
+import NetInfo from "@react-native-community/netinfo";
 
 Font.loadAsync({
   karla: require("./assets/fonts/karla/Karla-Regular.ttf"),
@@ -42,6 +45,8 @@ export default function App() {
   const [result, setResult] = useState(false);
   const [refresh, setRefresh] = useState(false);
   var date = new Date().toDateString();
+  const [network, setNetwork] = useState(false);
+  // Subscribe
 
   useEffect(() => {
     (async () => {
@@ -56,24 +61,28 @@ export default function App() {
         setErrorMsg("Permission to access location was denied");
         return;
       }
+      const unsubscribe = NetInfo.addEventListener((state) => {
+        setNetwork(state.isConnected);
+        // setNetwork(false);
+        // setTimeout(() => setNetwork(true), 3000);
+      });
+
+      // Unsubscribe
+      unsubscribe();
       await Location.watchPositionAsync({ enableHighAccuracy: true }, (loc) => {
         setLocation(loc);
+        // ? reverse geocoding for the name
         axios
           .get(
-            `https://us1.locationiq.com/v1/reverse.php?key=${YOUR_APP_KEY}&lat=${loc.coords.latitude}&lon=${loc.coords.longitude}&format=json`
+            `https://us1.locationiq.com/v1/reverse.php?key=pk.7e6fdb6bb8149c7f2080a575eaeb41aa&lat=${loc.coords.latitude}&lon=${loc.coords.longitude}&format=json&zoom=14&namedetails=1&addressdetails=1`
           )
           .then((resp) => {
-            setName(
-              (resp.data.address.suburb
-                ? resp.data.address.suburb
-                : resp.data.address.town) +
-                ", " +
-                resp.data.address.state
-            );
+            setName(resp.data.display_name.split(",").slice(0, 2).join(" "));
           });
+        // ? open weather map for weather info for that location
         axios
           .get(
-            `https://api.openweathermap.org/data/2.5/onecall?lat=${loc.coords.latitude}&lon=${loc.coords.longitude}&exclude=current,minutely,alerts&appid=${YOUR_APP_KEY}&units=metric`
+            `https://api.openweathermap.org/data/2.5/onecall?lat=${loc.coords.latitude}&lon=${loc.coords.longitude}&exclude=current,minutely,alerts&appid=293e6dbc78a29a8c30c6a158449c0ebb&units=metric`
           )
           .then((resp) => {
             setHourly(resp.data.hourly);
@@ -132,12 +141,28 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <PaperProvider theme={theme}>
-        <SafeAreaView></SafeAreaView>
-        <BottomNavigation
-          navigationState={{ index, routes }}
-          onIndexChange={setIndex}
-          renderScene={renderScene}
-        />
+        {network ? (
+          <>
+            <SafeAreaView></SafeAreaView>
+            <BottomNavigation
+              navigationState={{ index, routes }}
+              onIndexChange={setIndex}
+              renderScene={renderScene}
+            />
+          </>
+        ) : (
+          <View
+            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+          >
+            <Image
+              source={require("./assets/notConnected.gif")}
+              style={{ width: "100%" }}
+            />
+            <Text style={{ fontSize: 20, fontFamily: "karlaMedium" }}>
+              Connect to the internet
+            </Text>
+          </View>
+        )}
         <TouchableOpacity
           style={{ position: "absolute", top: "6%", right: "3%" }}
           onPress={() => setRefresh(!refresh)}
