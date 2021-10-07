@@ -8,4 +8,6 @@ A open weather map API based Application to get current weather and getting 8 Da
 
 <img alt = "screenshot1" src="./assets/screenshots/ss1.jpeg" style="width:49%">
 
-API Key used in the app will no longer work please create your own on 'https://openweathermap.org'
+API Key used in the app will no longer work please create your own on
+Weather API: 'https://openweathermap.org'
+Reverse Geocoding API: 'https://locationiq.com/'
