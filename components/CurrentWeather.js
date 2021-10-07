@@ -13,9 +13,20 @@ import * as Location from "expo-location";
 import Icon from "react-native-vector-icons/FontAwesome";
 import axios from "axios";
 
-function CurrentWeatherForecast({ name, main, weather, result, date }) {
+function CurrentWeatherForecast({ name, main, weather, result, date, hourly }) {
   const [refresh, setRefresh] = useState(false);
-  const icon = `https://openweathermap.org/img/wn/${weather.icon}@2x.png`;
+  const icon = `https://openweathermap.org/img/wn/${weather.icon}@4x.png`;
+
+  function formatAMPM(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? "pm" : "am";
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    var strTime = hours + ":" + minutes + " " + ampm;
+    return strTime;
+  }
 
   return result ? (
     <ImageBackground
@@ -28,7 +39,7 @@ function CurrentWeatherForecast({ name, main, weather, result, date }) {
       <ScrollView
         style={[
           StyleSheet.absoluteFill,
-          { backgroundColor: "rgba(255,255,255, 0.3)", padding: 20 },
+          { backgroundColor: "rgba(200,200,200, 0.4)", padding: 20 },
         ]}
       >
         <Text style={styles.title}>
@@ -57,6 +68,29 @@ function CurrentWeatherForecast({ name, main, weather, result, date }) {
         </Text>
         <View style={{ justifyContent: "center", alignItems: "center" }}>
           <Image style={styles.img} source={{ uri: icon }} />
+        </View>
+
+        <View>
+          <Text style={[styles.center, styles.centerHeading]}>
+            Hourly Forecast (48 Hours)
+          </Text>
+          <ScrollView style={styles.hourly} horizontal={true}>
+            {hourly.map((item, index) => {
+              const iconUrl = `https://openweathermap.org/img/wn/${item.weather[0].icon}@4x.png`;
+              return (
+                <View key={index} style={styles.hourContainer}>
+                  <Text style={{fontFamily:'karlaMedium'}}>{formatAMPM(new Date(item.dt * 1000))}</Text>
+                  <Text style={{fontSize: 13, fontFamily: 'karlaLight'}}>{item.weather[0].main}</Text>
+                  <Image
+                    source={{ uri: iconUrl }}
+                    style={{ height: 50, width: 50 }}
+                  />
+
+                  <Text style={{fontFamily:'karlaMedium'}}>{item.temp} °C</Text>
+                </View>
+              );
+            })}
+          </ScrollView>
         </View>
         <View style={styles.tempContainer}>
           <View>
@@ -120,6 +154,17 @@ const styles = StyleSheet.create({
     fontSize: 25,
   },
   centerHeading: { fontFamily: "karlaBold", fontSize: 30 },
+  hourContainer: {
+    backgroundColor: "rgba(255,255,255,0.5)",
+    marginRight: 10,
+    padding: 5,
+    borderRadius: 5,
+    alignItems: "center",
+    width: 90,
+  },
+  hourly: {
+    marginTop: 25,
+  },
 });
 
 export default CurrentWeatherForecast;

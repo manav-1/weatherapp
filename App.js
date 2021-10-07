@@ -6,6 +6,7 @@ import {
   ScrollView,
   RefreshControl,
   TouchableOpacity,
+  Platform
 } from "react-native";
 import CurrentWeather from "./components/CurrentWeather";
 import FiveDayForecast from "./components/FiveDayForecast";
@@ -36,6 +37,7 @@ export default function App() {
   const [name, setName] = useState("Pitampura");
   const [main, setMain] = useState({});
   const [weather, setWeather] = useState({});
+  const [hourly, setHourly] = useState({});
   const [fiveDayForecast, setFiveDayForecast] = useState({});
   const [result, setResult] = useState(false);
   const [refresh, setRefresh] = useState(false);
@@ -71,9 +73,10 @@ export default function App() {
           });
         axios
           .get(
-            `https://api.openweathermap.org/data/2.5/onecall?lat=${loc.coords.latitude}&lon=${loc.coords.longitude}&exclude=current,minutely,hourly,alerts&appid=293e6dbc78a29a8c30c6a158449c0ebb&units=metric`
+            `https://api.openweathermap.org/data/2.5/onecall?lat=${loc.coords.latitude}&lon=${loc.coords.longitude}&exclude=current,minutely,alerts&appid=293e6dbc78a29a8c30c6a158449c0ebb&units=metric`
           )
           .then((resp) => {
+            setHourly(resp.data.hourly)
             setMain({
               temp: resp.data.daily[0].temp,
               feels_like: resp.data.daily[0].feels_like,
@@ -81,7 +84,7 @@ export default function App() {
               pressure: resp.data.daily[0].pressure,
             });
             setWeather(resp.data.daily[0].weather[0]);
-            setFiveDayForecast(resp.data);
+            setFiveDayForecast(resp.data.daily);
             setResult(true);
           });
       });
@@ -118,6 +121,7 @@ export default function App() {
         weather={weather}
         result={result}
         date={date}
+        hourly={hourly}
       />
     ),
     eight: () => (

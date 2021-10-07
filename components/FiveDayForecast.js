@@ -26,7 +26,7 @@ function FiveDayWeatherForeCast({ current, name, date }) {
         >
           8 Day Weather Forecast
         </Text>
-        {current.daily.map((item, index) => (
+        {current.map((item, index) => (
           <DayWeatherForecast weather={item} key={index} />
         ))}
       </ScrollView>
