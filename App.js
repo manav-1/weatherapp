@@ -46,6 +46,9 @@ export default function App() {
   const [refresh, setRefresh] = useState(false);
   var date = new Date().toDateString();
   const [network, setNetwork] = useState(false);
+
+  const LOCATION_API = "YOUR API KEY";
+  const WEATHER_API = "YOUR API KEY";
   // Subscribe
 
   useEffect(() => {
@@ -74,7 +77,7 @@ export default function App() {
         // ? reverse geocoding for the name
         axios
           .get(
-            `https://us1.locationiq.com/v1/reverse.php?key=pk.7e6fdb6bb8149c7f2080a575eaeb41aa&lat=${loc.coords.latitude}&lon=${loc.coords.longitude}&format=json&zoom=14&namedetails=1&addressdetails=1`
+            `https://us1.locationiq.com/v1/reverse.php?key=${LOCATION_API}&lat=${loc.coords.latitude}&lon=${loc.coords.longitude}&format=json&zoom=14&namedetails=1&addressdetails=1`
           )
           .then((resp) => {
             setName(resp.data.display_name.split(",").slice(0, 2).join(" "));
@@ -82,7 +85,7 @@ export default function App() {
         // ? open weather map for weather info for that location
         axios
           .get(
-            `https://api.openweathermap.org/data/2.5/onecall?lat=${loc.coords.latitude}&lon=${loc.coords.longitude}&exclude=current,minutely,alerts&appid=293e6dbc78a29a8c30c6a158449c0ebb&units=metric`
+            `https://api.openweathermap.org/data/2.5/onecall?lat=${loc.coords.latitude}&lon=${loc.coords.longitude}&exclude=current,minutely,alerts&appid=${WEATHER_API}&units=metric`
           )
           .then((resp) => {
             setHourly(resp.data.hourly);
