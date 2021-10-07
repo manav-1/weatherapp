@@ -60,7 +60,7 @@ export default function App() {
         setLocation(loc);
         axios
           .get(
-            `https://us1.locationiq.com/v1/reverse.php?key=pk.7e6fdb6bb8149c7f2080a575eaeb41aa&lat=${loc.coords.latitude}&lon=${loc.coords.longitude}&format=json`
+            `https://us1.locationiq.com/v1/reverse.php?key=${YOUR_APP_KEY}&lat=${loc.coords.latitude}&lon=${loc.coords.longitude}&format=json`
           )
           .then((resp) => {
             setName(
@@ -73,10 +73,10 @@ export default function App() {
           });
         axios
           .get(
-            `https://api.openweathermap.org/data/2.5/onecall?lat=${loc.coords.latitude}&lon=${loc.coords.longitude}&exclude=current,minutely,alerts&appid=293e6dbc78a29a8c30c6a158449c0ebb&units=metric`
+            `https://api.openweathermap.org/data/2.5/onecall?lat=${loc.coords.latitude}&lon=${loc.coords.longitude}&exclude=current,minutely,alerts&appid=${YOUR_APP_KEY}&units=metric`
           )
           .then((resp) => {
-            setHourly(resp.data.hourly)
+            setHourly(resp.data.hourly);
             setMain({
               temp: resp.data.daily[0].temp,
               feels_like: resp.data.daily[0].feels_like,
