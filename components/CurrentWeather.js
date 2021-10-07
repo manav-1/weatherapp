@@ -45,7 +45,7 @@ function CurrentWeatherForecast({ name, main, weather, result, date }) {
           <Text
             style={{ fontSize: 80, fontFamily: "karlaBold", marginRight: 10 }}
           >
-            {main.temp.toFixed(1)}
+            {main.temp.day.toFixed(1)}
           </Text>
           <Text style={{ fontSize: 28, fontFamily: "karlaMedium" }}>
             °C{"\n"}
@@ -53,7 +53,7 @@ function CurrentWeatherForecast({ name, main, weather, result, date }) {
           </Text>
         </View>
         <Text style={{ fontFamily: "karlaMedium", fontSize: 16 }}>
-          {date}, {main.temp_max.toFixed(1)} °C / {main.temp_min.toFixed(1)} °C
+          {date}, {main.temp.max.toFixed(1)} °C / {main.temp.min.toFixed(1)} °C
         </Text>
         <View style={{ justifyContent: "center", alignItems: "center" }}>
           <Image style={styles.img} source={{ uri: icon }} />
@@ -61,11 +61,11 @@ function CurrentWeatherForecast({ name, main, weather, result, date }) {
         <View style={styles.tempContainer}>
           <View>
             <Text style={[styles.center, styles.centerHeading]}>Max</Text>
-            <Text style={styles.center}>{main.temp_max} °C</Text>
+            <Text style={styles.center}>{main.temp.max.toFixed(1)} °C</Text>
           </View>
           <View>
             <Text style={[styles.center, styles.centerHeading]}>Min</Text>
-            <Text style={styles.center}>{main.temp_min} °C</Text>
+            <Text style={styles.center}>{main.temp.min.toFixed(1)} °C</Text>
           </View>
         </View>
 
@@ -84,7 +84,9 @@ function CurrentWeatherForecast({ name, main, weather, result, date }) {
             <Text style={[styles.center, styles.centerHeading]}>
               Feels Like{" "}
             </Text>
-            <Text style={styles.center}>{main.feels_like} °C</Text>
+            <Text style={styles.center}>
+              {main.feels_like.day.toFixed(1)} °C
+            </Text>
           </View>
         </View>
       </ScrollView>

@@ -58,20 +58,31 @@ export default function App() {
         setLocation(loc);
         axios
           .get(
-            `https://api.openweathermap.org/data/2.5/weather?lat=${loc.coords.latitude}&lon=${loc.coords.longitude}&appid=293e6dbc78a29a8c30c6a158449c0ebb&units=metric`
+            `https://us1.locationiq.com/v1/reverse.php?key=pk.7e6fdb6bb8149c7f2080a575eaeb41aa&lat=${loc.coords.latitude}&lon=${loc.coords.longitude}&format=json`
           )
-          .then((res) => {
-            setName(res.data.name);
-            setMain(res.data.main);
-            setWeather(res.data.weather[0]);
-            setResult(true);
+          .then((resp) => {
+            setName(
+              (resp.data.address.suburb
+                ? resp.data.address.suburb
+                : resp.data.address.town) +
+                ", " +
+                resp.data.address.state
+            );
           });
         axios
           .get(
             `https://api.openweathermap.org/data/2.5/onecall?lat=${loc.coords.latitude}&lon=${loc.coords.longitude}&exclude=current,minutely,hourly,alerts&appid=293e6dbc78a29a8c30c6a158449c0ebb&units=metric`
           )
           .then((resp) => {
+            setMain({
+              temp: resp.data.daily[0].temp,
+              feels_like: resp.data.daily[0].feels_like,
+              humidity: resp.data.daily[0].humidity,
+              pressure: resp.data.daily[0].pressure,
+            });
+            setWeather(resp.data.daily[0].weather[0]);
             setFiveDayForecast(resp.data);
+            setResult(true);
           });
       });
     })();
